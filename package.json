@@ -22,7 +22,7 @@
     "@emotion/react": "^11",
     "@emotion/styled": "^11",
     "@next-auth/prisma-adapter": "^1.0.3",
-    "@prisma/client": "^3.14.0",
+    "@prisma/client": "^3.15.1",
     "formidable": "^2.0.1",
     "framer-motion": "^6",
     "next": "12.1.6",
