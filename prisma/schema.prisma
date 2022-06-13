@@ -46,6 +46,8 @@ model User {
   accounts       Account[]
   sessions       Session[]
   userExtensions UserExtension[]
+  isPublic       Boolean         @default(false)
+  sharedId       String?         @unique
 }
 
 model VerificationToken {
