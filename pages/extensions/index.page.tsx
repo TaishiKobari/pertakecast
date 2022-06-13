@@ -1,188 +1,99 @@
-import { Layout } from "@/components"
-import { EXTENSIONS_API, EXTENSIONS_IMPORT_API } from "@/constants"
-import { useExtensions, useVscodeExtension } from "@/lib"
+import { Extensions, ImportForm, Layout, SwitchForm } from "@/components"
+import { useExtensions } from "@/lib"
 import { NextPageWithLayout } from "@/types"
-import { CheckCircleIcon, DownloadIcon, StarIcon } from "@chakra-ui/icons"
 import {
-  Badge,
+  Alert,
+  AlertDescription,
+  AlertIcon,
+  AlertTitle,
   Box,
   Button,
-  chakra,
+  CloseButton,
   Container,
-  FormControl,
-  FormLabel,
-  Heading,
-  HStack,
-  Image,
-  Input,
-  List,
-  ListItem,
+  Link,
   SimpleGrid,
-  SkeletonCircle,
-  StackDivider,
-  Switch,
   Text,
+  useDisclosure,
   VStack,
 } from "@chakra-ui/react"
-import { FormEvent, Fragment, ReactElement, useCallback, useRef } from "react"
-import { useSWRConfig } from "swr"
+import { ReactElement, useCallback } from "react"
 
-const Extensions: NextPageWithLayout = () => {
-  const inputRef = useRef<HTMLInputElement>(null)
+import { SAMPLE_FILE_PATH } from "@/constants"
+import { saveAs } from "file-saver"
 
+const ExtensionsPage: NextPageWithLayout = () => {
   const { extensions } = useExtensions()
 
-  const { mutate } = useSWRConfig()
-
-  const handleSubmit = useCallback(
-    async (e: FormEvent<HTMLFormElement>) => {
-      e.preventDefault()
-
-      const file = inputRef.current?.files?.[0]
-
-      if (!file) throw new Error("ファイルが選択されていません")
-      const params = new FormData()
-      params.append("jsonFile", file)
-
-      await fetch(EXTENSIONS_IMPORT_API, { method: "POST", body: params })
-
-      mutate(EXTENSIONS_API)
-    },
-    [mutate]
-  )
-
   return (
-    <VStack spacing={8}>
+    <VStack spacing={8} pt={[4, 8]}>
       <Container maxW="container.md">
-        <SimpleGrid columns={2}>
-          <chakra.form onSubmit={handleSubmit} pr={2}>
-            <FormControl>
-              <FormLabel htmlFor="file" fontWeight="bold" fontSize="2xl" pb={2}>
-                extension.jsonをインポート
-              </FormLabel>
-              <Input id="file" type="file" accept=".json" ref={inputRef} />
-            </FormControl>
-            <Button my={4} type="submit" colorScheme="blue">
-              インポート
-            </Button>
-          </chakra.form>
-
-          <VStack spacing={0} align="stretch" pl={2}>
-            <Switch size="lg" />
-          </VStack>
-        </SimpleGrid>
+        <VStack spacing={4}>
+          <Explanation />
+          <SimpleGrid columns={[1, 1, 2]}>
+            <ImportForm />
+            <Box pl={[0, 0, 8]} py={[8, 8, 0]}>
+              <SwitchForm />
+            </Box>
+          </SimpleGrid>
+        </VStack>
       </Container>
-      <Container maxW="container.xl">
-        <List spacing={4}>
-          {extensions?.map(({ id, extensionId, userExtensions }, index) => (
-            <ListItem key={id}>
-              <Extension
-                extensionId={extensionId}
-                version={userExtensions[0]?.version ?? ""}
-              />
-            </ListItem>
-          ))}
-        </List>
-      </Container>
+      <Extensions extensions={extensions ?? []} />
     </VStack>
   )
 }
 
-type ExtensionProps = {
-  extensionId: string
-  version: string
-}
+function Explanation() {
+  const handleDownload = useCallback(async () => {
+    try {
+      const res = await (await fetch(SAMPLE_FILE_PATH)).blob()
+      saveAs(res, "sample-extensions.json")
+    } catch (e) {
+      window.open(SAMPLE_FILE_PATH)
+    }
+  }, [])
 
-function Extension({ extensionId, version }: ExtensionProps) {
-  const { extension } = useVscodeExtension(extensionId)
+  const {
+    isOpen: isVisible,
+    onClose,
+    onOpen,
+  } = useDisclosure({ defaultIsOpen: true })
 
-  const assetUri = extension?.versions[0].assetUri
-
-  const defaultIconUri =
-    assetUri && `${assetUri}/Microsoft.VisualStudio.Services.Icons.Default`
-
-  const smallIconUri =
-    assetUri && `${assetUri}/Microsoft.VisualStudio.Services.Icons.Small`
-
-  const iconUri = defaultIconUri || smallIconUri
-
-  const installTimes = extension?.statistics.find(
-    ({ statisticName }) => statisticName === "install"
-  )?.value
-
-  const rating = extension?.statistics.find(
-    ({ statisticName }) => statisticName === "weightedRating"
-  )?.value
-
-  const ratingInt = rating && Math.round(rating)
-
-  return (
-    <HStack spacing={4} rounded="lg" borderWidth={1} px={4} py={2}>
-      <Image
-        {...(iconUri && { src: iconUri })}
-        alt={extension?.extensionName}
-        boxSize={24}
-        fallback={<SkeletonCircle size="24" />}
-        fit="contain"
-      />
-      <VStack spacing={1} align="stretch" overflow="hidden">
-        <HStack spacing={1} align="center">
-          <Heading
-            size="lg"
-            textOverflow="ellipsis"
-            whiteSpace="nowrap"
-            overflow="hidden"
+  return isVisible ? (
+    <Alert status="info" position="relative">
+      <AlertIcon />
+      <Box>
+        <AlertTitle>VS Code拡張をシェアしよう！</AlertTitle>
+        <AlertDescription>
+          <Text>
+            1. VS CodeのSetting Syncなどからextensions.jsonを出力してください。
+          </Text>
+          <Link
+            pl={2}
+            color="blue.500"
+            fontWeight="bold"
+            onClick={handleDownload}
           >
-            {extension?.displayName}
-          </Heading>
-          <Badge>v{version}</Badge>
-        </HStack>
-        <HStack spacing={2} divider={<StackDivider />}>
-          <HStack spacing={1}>
-            {extension?.publisher.isDomainVerified && (
-              <CheckCircleIcon color="blue.500" />
-            )}
-            <Text>{extension?.publisher.displayName}</Text>
-          </HStack>
-          <Box>
-            <DownloadIcon />
-            {installTimes?.toLocaleString()}
-          </Box>
-          <Rating rate={ratingInt} />
-        </HStack>
-        <Text maxH={12} overflow="hidden">
-          {extension?.shortDescription}
-        </Text>
-      </VStack>
-    </HStack>
+            extensions.jsonのサンプルはこちらからダウンロード
+          </Link>
+          <Text>2. extensions.jsonをアップロードしてください。</Text>
+          <Text>3. 完了したら公開リンクを発行して共有しよう！</Text>
+        </AlertDescription>
+      </Box>
+      <CloseButton
+        alignSelf="flex-start"
+        position="absolute"
+        right={1}
+        top={1}
+        onClick={onClose}
+      />
+    </Alert>
+  ) : (
+    <Button onClick={onOpen}>説明を表示</Button>
   )
 }
 
-type RatingProps = {
-  rate: number | undefined
-}
-
-function Rating({ rate }: RatingProps) {
-  if (rate !== undefined && (rate < 0 || rate > 5)) return <></>
-  return (
-    <HStack spacing={0}>
-      {[1, 2, 3, 4, 5].map((index) => (
-        <Fragment key={index}>
-          {rate === undefined ? (
-            <SkeletonCircle size="4" />
-          ) : index <= rate ? (
-            <StarIcon color="orange.300" />
-          ) : (
-            <StarIcon color="gray.300" />
-          )}
-        </Fragment>
-      ))}
-    </HStack>
-  )
-}
-
-Extensions.getLayout = function getLayout(page: ReactElement) {
+ExtensionsPage.getLayout = function getLayout(page: ReactElement) {
   return <Layout>{page}</Layout>
 }
 
-export default Extensions
+export default ExtensionsPage

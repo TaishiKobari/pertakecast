@@ -1,3 +1,4 @@
+import { HOME_PATH } from "@/constants"
 import { prisma } from "@/lib/api/prisma"
 import { PrismaAdapter } from "@next-auth/prisma-adapter"
 import NextAuth from "next-auth"
@@ -11,10 +12,9 @@ export default NextAuth({
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
     }),
   ],
-  theme: {
-    colorScheme: "light", // "auto" | "dark" | "light"
-    brandColor: "", // Hex color code
-    logo: "", // Absolute URL to image
+  pages: {
+    signIn: HOME_PATH,
+    signOut: HOME_PATH,
   },
   callbacks: {
     session: ({ session, user }) => ({
