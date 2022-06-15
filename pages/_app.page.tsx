@@ -4,7 +4,6 @@ import { ChakraProvider } from "@chakra-ui/react"
 import { SessionProvider } from "next-auth/react"
 import type { AppProps } from "next/app"
 import { SWRConfig } from "swr"
-import "../styles/globals.css"
 
 type AppPropsWithLayout = AppProps & {
   Component: NextPageWithLayout
