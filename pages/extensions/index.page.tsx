@@ -1,4 +1,10 @@
-import { Extensions, ImportForm, Layout, SwitchForm } from "@/components"
+import {
+  DeleteAllButton,
+  Extensions,
+  ImportForm,
+  Layout,
+  SwitchForm,
+} from "@/components"
 import { useExtensions } from "@/lib"
 import { NextPageWithLayout } from "@/types"
 import {
@@ -37,6 +43,7 @@ const ExtensionsPage: NextPageWithLayout = () => {
           </SimpleGrid>
         </VStack>
       </Container>
+      {extensions?.length && <DeleteAllButton />}
       <Extensions extensions={extensions ?? []} />
     </VStack>
   )
