@@ -2,6 +2,8 @@
 ============
 [![Current Version](https://img.shields.io/badge/version-0.1.0-green.svg)](https://github.com/TaishiKobari/pertakecast)
 
+https://pertakecast.vercel.app/
+
 VS Codeの拡張機能セットを共有できるWebアプリです。
 extensions.jsonを読み込んで、拡張機能の名前、アイコン、リンクなどを取得します。
 
