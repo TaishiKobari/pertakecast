@@ -1,36 +1,33 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+[pertakecast](https://pertakecast.vercel.app/)
+============
+[![Current Version](https://img.shields.io/badge/version-0.1.0-green.svg)](https://github.com/TaishiKobari/pertakecast)
 
-## Getting Started
+https://pertakecast.vercel.app/
 
-First, run the development server:
+VS Codeの拡張機能セットを共有できるWebアプリです。
+extensions.jsonを読み込んで、拡張機能の名前、アイコン、リンクなどを取得します。
 
-```bash
-npm run dev
-# or
-yarn dev
-```
+![CleanShot 2022-06-16 at 04 41 41](https://user-images.githubusercontent.com/70504137/173911772-f1c1850d-f4ca-42dd-a49d-2a8af1c99278.gif)
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+## Features
+- jsonファイルから拡張機能の情報を自動で取得
+- 共有リンク発行
+- 保存した拡張機能の削除
+- Googleログイン
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+.
+![CleanShot 2022-06-16 at 04 49 20](https://user-images.githubusercontent.com/70504137/173914502-1f094046-719b-4fa3-9c26-a2f34377355d.gif)
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+---
 
-## Learn More
+## Setup
 
-To learn more about Next.js, take a look at the following resources:
+1. Clone this repo to your desktop
+1. run `docker-compose up` to create postgres database.
+1. run `yarn` to install all the dependencies.
+1. run `yarn migrate` to run prisma migration.
+1. run `yarn dev` and access http://localhost:3000.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
-
-## Local Development
+---
