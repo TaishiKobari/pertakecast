@@ -27,7 +27,7 @@
     "file-saver": "^2.0.5",
     "formidable": "^2.0.1",
     "framer-motion": "^6",
-    "next": "12.2.0",
+    "next": "12.2.2",
     "next-auth": "^4.8.0",
     "react": "18.2.0",
     "react-copy-to-clipboard": "^5.1.0",
